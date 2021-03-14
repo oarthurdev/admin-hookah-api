@@ -4,6 +4,7 @@ const UserController = require('./controllers/UserController')
 const GeralController = require('./controllers/GeralController')
 const LoungeController = require('./controllers/Lounge/LoungeController')
 const ProductController = require('./controllers/Product/ProductController')
+const CategoryController = require('./controllers/Product/Category/CategoryController')
 
 const routes = express.Router()
 
@@ -15,6 +16,7 @@ routes.post('/lounge/register', LoungeController.register)
 routes.post('/product/get-all', ProductController.getAll)
 routes.post('/product/upload-image', ProductController.uploadImage)
 routes.post('/product/register', ProductController.register)
+routes.get('/category/get-all', CategoryController.getCategory)
 
 // routes.get('/company', UserController.auth, CompanyController.index)
 
