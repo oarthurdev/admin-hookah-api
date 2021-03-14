@@ -58,14 +58,22 @@ module.exports = {
         
         // const encryptedPassword = md5(password)
         
-        const register = await connection('user').insert({
+        const user = await connection('[dbo].[user]')
+        .where('email', email)
+        .select('user_id')
+        .first()
+
+        if(!user) {
+            const register = await connection('user').insert({
             email: email,
             password: md5(password),
             name: name,
             phone: phone,
             activated: true
         })
-        
         return response.json({ register })
+    } else {
+        return response.json({ emailExist: true})
     }
+}   
 }
