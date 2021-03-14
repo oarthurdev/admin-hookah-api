@@ -6,11 +6,11 @@ const routes = require('./routes')
 const dotenv = require('dotenv').config()
 const app = express()
 const cookieParser = require('cookie-parser')
-const bodyParser = require('body-parser')
+let bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken');
 
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(bodyParser.json())
+app.use(bodyParser.json({limit: '10mb', extended: true}))
+app.use(bodyParser.urlencoded({limit: '10mb', extended: true}))
 app.use(cookieParser())
 app.use(cors());
 app.use(express.json());
