@@ -9,7 +9,7 @@ const routes = express.Router()
 routes.post('/login',  UserController.login)
 routes.post('/register', UserController.register)
 routes.post('/logout', UserController.logout)
-routes.get('/dashboard', GeralController.dashboard)
+routes.post('/dashboard', GeralController.dashboard)
 routes.post('/lounge/register', LoungeController.register)
 
 // routes.get('/company', UserController.auth, CompanyController.index)
