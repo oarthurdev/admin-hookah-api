@@ -3,6 +3,25 @@ const connection = require('../../database/connection')
 require("dotenv-safe").config()
 
 module.exports = {
+    async getAll (req, res, next) {
+        let token = req.body.token
+
+        try {
+            const user = await connection('[dbo].[user]')
+            .where('token', token)
+            .select('user_id')
+            .first()
+
+            const lounge = await connection('[dbo].[store]')
+                            .where('user_id', user.user_id)
+                            .select(['store_id', 'name'])
+                
+            return res.json({ lounge: lounge })
+        } catch (e) {
+            res.status(500).send({ code: 404, message: 'Failed to get your lounges.' });
+        }
+    },
+    
     async register(request, response) {
         const {loungeName, loungeDescription, address, phone, products, token} = request.body
 
@@ -16,8 +35,8 @@ module.exports = {
                            .select('user_id')
                            .first()
 
-        
-        try{
+        console.log(user)
+        console.log(token)
             const register = await connection('store').insert({
             user_id: user.user_id,
             name: loungeName,
@@ -29,8 +48,5 @@ module.exports = {
         })
         
             return response.json({ success: true })
-        } catch(e) {
-            return response.json({ success: false })
-        }
     }
 }
