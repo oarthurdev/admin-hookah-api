@@ -38,7 +38,8 @@ module.exports = {
         response.type = matches[1];
         response.data = new Buffer(matches[2], 'base64');
 
-        var dir = 'src/images/product/' + store_id + '_' + product_name;
+        var nomePasta = store_id + '_' + product_name;
+        var dir = 'src/images/product/' + nomePasta.trim();
 
         if (!fs.existsSync(dir)){
             fs.mkdirSync(dir);
