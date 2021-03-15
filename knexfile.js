@@ -2,7 +2,7 @@ const dotenv = require('dotenv').config();
 
 module.exports = {
   development: {
-    client: 'pg',
+    client: 'process.env.DB_CLIENT',
     connection: {
         user: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
