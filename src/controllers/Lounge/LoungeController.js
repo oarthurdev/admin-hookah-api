@@ -7,12 +7,12 @@ module.exports = {
         let token = req.body.token
 
         try {
-            const user = await connection('[dbo].[user]')
+            const user = await connection('user')
             .where('token', token)
             .select('user_id')
             .first()
 
-            const lounge = await connection('[dbo].[store]')
+            const lounge = await connection('store')
                             .where('user_id', user.user_id)
                             .select(['store_id', 'name'])
                 
@@ -30,7 +30,7 @@ module.exports = {
             productsForSale += element.text + ','
         });
 
-        const user = await connection('[dbo].[user]')
+        const user = await connection('user')
                            .where('token', token)
                            .select('user_id')
                            .first()

@@ -9,7 +9,7 @@ module.exports = {
         var categoryReturn = []
 
         try {
-            const category = await connection('[dbo].[category]')
+            const category = await connection('category')
             .select(['category_id', 'name'])
 
             category.forEach(element => {

@@ -21,7 +21,7 @@ module.exports = {
         var pwd = req.body.password
         pwd = md5(pwd)
 
-        const user = await connection('[dbo].[user]')
+        const user = await connection('user')
         .where('email', email)
         .select('*')
         .first()
@@ -35,7 +35,7 @@ module.exports = {
 
             console.log(token)
 
-            await connection('[dbo].[user]')
+            await connection('user')
             .update('token', token)
             .where('user_id', user.user_id)
 
@@ -47,7 +47,7 @@ module.exports = {
     
     async logout (req, res) {
         var token = req.body.token
-        await connection('[dbo].[user]')
+        await connection('user')
               .update('token', null)
               .where('token', token)
         res.json({ auth: false, token: null })
@@ -58,7 +58,7 @@ module.exports = {
         
         // const encryptedPassword = md5(password)
         
-        const user = await connection('[dbo].[user]')
+        const user = await connection('user')
         .where('email', email)
         .select('user_id')
         .first()

@@ -10,12 +10,12 @@ module.exports = {
         let totalReview = 0
 
         try {
-            const user = await connection('[dbo].[user]')
+            const user = await connection('user')
             .where('token', token)
             .select('user_id')
             .first()
 
-            const countReview = await connection('[dbo].[store]')
+            const countReview = await connection('store')
             .where('user_id', user.user_id)
             .select('reviews')
 
@@ -23,17 +23,17 @@ module.exports = {
                 totalReview += Element.reviews
             })
 
-            const store = await connection('[dbo].[store]')
+            const store = await connection('store')
             .where('user_id', user.user_id)
             .select('store_id')
             .first()
 
-            const countLounge = await connection('[dbo].[store]')
+            const countLounge = await connection('store')
                             .where('user_id', user.user_id)
                             .count('user_id')
                             .first()
 
-            const countProduct = await connection('[dbo].[product]')
+            const countProduct = await connection('product')
             .where('store_id', store.store_id)
             .count('product_id')
             .first()

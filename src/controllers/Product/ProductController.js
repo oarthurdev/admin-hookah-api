@@ -1,7 +1,10 @@
 const connection = require('../../database/connection')
+const String = require('../../functions/string-prototypes')
+
 var fs = require('fs')
 const md5 = require('md5')
 var uniqid = require('uniqid');
+const { prototype } = require('events');
 
 require("dotenv-safe").config()
 
@@ -26,8 +29,12 @@ module.exports = {
     },
 
     async uploadImage (req, res, next) {
-        const {image, store_id, product_name} = req.body
+        const {image, store_id} = req.body
 
+        var product_name = req.body.product_name
+
+        product_name = createSlug(product_name)
+        
         var matches = image.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
         response = {};
 
@@ -39,7 +46,8 @@ module.exports = {
         response.data = new Buffer(matches[2], 'base64');
 
         var nomePasta = store_id + '_' + product_name;
-        var dir = 'src/images/product/' + nomePasta.trim();
+        
+        var dir = 'src/images/product/' + nomePasta;
 
         if (!fs.existsSync(dir)){
             fs.mkdirSync(dir);
