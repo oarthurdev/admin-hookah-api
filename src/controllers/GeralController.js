@@ -45,5 +45,16 @@ module.exports = {
         } catch (e) {
             res.status(500).send({ message: 'Failed to get infos.' });
         }
-    }
+    },
+
+    async getPhoto (req, res, next) {
+        let email = req.body.email
+
+            const user = await connection('user')
+            .where('email', email)
+            .select('image')
+            .first()
+                
+            return res.json({ profile_picture: user.image })
+    },
 }

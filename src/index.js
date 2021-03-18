@@ -15,7 +15,7 @@ app.use(cookieParser())
 app.use(cors());
 app.use(express.json());
 app.use(routes);
- 
+app.use(express.static(__dirname + '/images/user'));
 const server = http.createServer(app)
 
 server.listen(process.env.PORT)

@@ -1,6 +1,8 @@
 const connection = require('../database/connection')
 const md5 = require('md5')
 const jwt = require('jsonwebtoken');
+var uniqid = require('uniqid');
+var fs = require('fs')
 
 module.exports = {
     async verifyJWT(req, res, next){
@@ -21,30 +23,58 @@ module.exports = {
         var pwd = req.body.password
         pwd = md5(pwd)
 
+        if (email == "" || pwd == "") {
+            return response.json({ isEmpty: true })
+        } 
+
         const user = await connection('user')
         .where('email', email)
         .select('*')
         .first()
 
-        if(email == user.email && pwd == user.password){
+        if(user == undefined) {
+            return res.json({ noExist: true })
+        } 
+
+        else if(email == user.email && pwd == user.password){
             const id = user.user_id
             
             var token = jwt.sign({ id }, process.env.SECRET, {
                 expiresIn: 3600 // expires in 1 hour
             })
 
-            console.log(token)
-
             await connection('user')
             .update('token', token)
             .where('user_id', user.user_id)
 
-            return res.json({ auth: true, token: token, user_id: user.user_id })
+            return res.json({ auth: true, token: token, email: user.email })
         } else {
             return res.json({ auth: false, message: 500 })
         }
     },
     
+    async profile (req, res) {
+        var {email, password, passwordR, passwordRR} = req.body
+
+        const user = await connection('user')
+        .where('email', email)
+        .select('password')
+        .first()
+
+        if(md5(password) != user.password) {
+            res.json({ diffPass:true })
+        }
+        else if(passwordR != passwordRR) {
+            res.json({ diffPass2:true })
+        } else {
+            await connection('user')
+            .update('password', md5(passwordR) )
+            .where('email', email)
+
+            res.json( true)
+        }
+    },
+
     async logout (req, res) {
         var token = req.body.token
         await connection('user')
@@ -75,5 +105,47 @@ module.exports = {
     } else {
         return response.json({ emailExist: true})
     }
-}   
+},
+async uploadImage (req, res, next) {
+    const {image, email} = req.body
+
+    var userPicture = email
+
+
+    userPicture = createSlug(userPicture)
+    
+    var matches = image.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
+    response = {};
+
+    if (matches.length !== 3) {
+        return new Error('Invalid input string');
+    }
+
+    response.type = matches[1];
+    response.data = new Buffer(matches[2], 'base64');
+    
+    var dir = 'src/images/user/';
+
+    if (!fs.existsSync(dir)){
+        fs.mkdirSync(dir);
+    }
+
+    var nameFile = uniqid() + '.png'
+
+    var fullPath = dir + '/' + nameFile
+
+    fs.writeFile(fullPath, response.data,  
+        function(err, data) {
+            if (err) {
+                console.log('err', err);
+            }
+    });
+
+    await connection('user')
+            .update('image', nameFile )
+            .where('email', email)
+
+    return res.json({ name_file: nameFile})
+}
+   
 }

@@ -8,6 +8,7 @@ exports.up = function(knex, Promise) {
       table.string('registered_by');
       table.string('social_network');
       table.string('link_social_network');
+      table.string('image');
       table.boolean('activated').notNullable();
       table.string('token');
       table.timestamp('created_at').defaultTo(knex.fn.now())

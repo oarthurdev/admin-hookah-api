@@ -10,22 +10,24 @@ require("dotenv-safe").config()
 
 module.exports = {
     async register(request, response) {
-        const {name, description, price, category, lounge_id} = request.body
+        const {name, description, price, store_id, category, name_file} = request.body
         
+        console.log(request.body)
         if (name == "" || description == "") {
             return response.json({ isEmpty: true })
         }
 
         const register = await connection('product').insert({
-            store_id: 1,
+            store_id: store_id,
             category_id: category.value,
             name: name,
             description: description,
             price: price,
+            image: name_file,
             reviews: 0
         })
-        
-        return response.json({ register })
+
+        return response.json( true )
     },
 
     async uploadImage (req, res, next) {
@@ -63,5 +65,7 @@ module.exports = {
                     console.log('err', err);
                 }
         });
+
+        return res.json({ name_file: nameFile})
     }
 }

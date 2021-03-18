@@ -11,15 +11,14 @@ const routes = express.Router()
 routes.post('/login',  UserController.login)
 routes.post('/register', UserController.register)
 routes.post('/logout', UserController.logout)
+routes.post('/user/profile', UserController.profile)
+routes.post('/user/get-photo', GeralController.getPhoto)
 routes.post('/dashboard', GeralController.dashboard)
 routes.post('/lounge/register', LoungeController.register)
 routes.post('/lounge/get-all', LoungeController.getAll)
 routes.post('/product/upload-image', ProductController.uploadImage)
+routes.post('/user/upload-image', UserController.uploadImage)
 routes.post('/product/register', ProductController.register)
 routes.get('/category/get-all', CategoryController.getCategory)
-
-// routes.get('/company', UserController.auth, CompanyController.index)
-
-// routes.post('/company/update', UserController.auth, CompanyController.update)
 
 module.exports = routes
