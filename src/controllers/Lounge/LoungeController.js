@@ -26,6 +26,7 @@ module.exports = {
         const {loungeName, loungeDescription, address, phone, products, token} = request.body
 
         let productsForSale = "";
+        
         products.forEach(element => {
             productsForSale += element.text + ','
         });
@@ -35,18 +36,16 @@ module.exports = {
                            .select('user_id')
                            .first()
 
-        console.log(user)
-        console.log(token)
-            const register = await connection('store').insert({
-            user_id: user.user_id,
-            name: loungeName,
-            description: loungeDescription,
-            address: address,
-            phone: phone,
-            product: productsForSale,
-            reviews: 0
+        const register = await connection('store').insert({
+                        user_id: user.user_id,
+                        name: loungeName,
+                        description: loungeDescription,
+                        address: address,
+                        phone: phone,
+                        product: productsForSale,
+                        reviews: 0
         })
-        
-            return response.json({ success: true })
+    
+        return response.json({ success: true })
     }
 }

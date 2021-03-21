@@ -130,7 +130,7 @@ async uploadImage (req, res, next) {
         fs.mkdirSync(dir);
     }
 
-    var nameFile = uniqid() + '.png'
+    var nameFile = md5(email) + '.png'
 
     var fullPath = dir + '/' + nameFile
 

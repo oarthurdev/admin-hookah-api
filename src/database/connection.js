@@ -2,7 +2,7 @@ const knex = require('knex');
 const dotenv = require('dotenv').config();
 
 const configurationJSON = {
-    client: 'pg',
+    client: process.env.DB_CLIENT,
     connection: {
         user: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,

@@ -15,18 +15,17 @@ module.exports = {
             .select('user_id')
             .first()
 
-            const countReview = await connection('store')
+            const store = await connection('store')
             .where('user_id', user.user_id)
+            .select('store_id')
+
+            const countReview = await connection('product')
+            .where('store_id', store.store_id)
             .select('reviews')
 
             countReview.forEach(Element => {
                 totalReview += Element.reviews
             })
-
-            const store = await connection('store')
-            .where('user_id', user.user_id)
-            .select('store_id')
-            .first()
 
             const countLounge = await connection('store')
                             .where('user_id', user.user_id)
