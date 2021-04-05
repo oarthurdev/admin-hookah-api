@@ -15,17 +15,18 @@ module.exports = {
             .select('user_id')
             .first()
 
-            const store = await connection('store')
+            const countReview = await connection('store')
             .where('user_id', user.user_id)
-            .select('store_id')
-
-            const countReview = await connection('product')
-            .where('store_id', store.store_id)
             .select('reviews')
 
             countReview.forEach(Element => {
                 totalReview += Element.reviews
             })
+
+            const store = await connection('store')
+            .where('user_id', user.user_id)
+            .select('store_id')
+            .first()
 
             const countLounge = await connection('store')
                             .where('user_id', user.user_id)
@@ -49,11 +50,31 @@ module.exports = {
     async getPhoto (req, res, next) {
         let email = req.body.email
 
+        const user = await connection('user')
+        .where('email', email)
+        .select('image')
+        .first()
+            
+        return res.json({ profile_picture: user.image })
+    },
+
+    async getRole (req, res, next) {
+        let email = req.body.email
+
+        try {
             const user = await connection('user')
             .where('email', email)
-            .select('image')
+            .select('role_id')
+            .first()
+
+            const roleName = await connection('role')
+            .where('role_id', user.role_id)
+            .select('name')
             .first()
                 
-            return res.json({ profile_picture: user.image })
+            return res.json({ role_name: roleName.name, role_id: user.role_id })
+        } catch (e) {
+            return res.json({ error: true })
+        }
     },
 }

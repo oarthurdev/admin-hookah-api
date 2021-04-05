@@ -8,6 +8,7 @@ exports.up = function(knex) {
         table.string('address').notNullable();
         table.string('phone').notNullable();
         table.string('product');
+        table.string('image');
         table.integer('reviews').notNullable();
         table.timestamp('created_at').defaultTo(knex.fn.now())
         table.timestamp('updated_at').defaultTo(knex.fn.now())

@@ -49,7 +49,7 @@ module.exports = {
 
             return res.json({ auth: true, token: token, email: user.email })
         } else {
-            return res.json({ auth: false, message: 500 })
+            return res.json({ auth: false, code: 401 })
         }
     },
     
@@ -84,26 +84,33 @@ module.exports = {
     },
     
     async register(request, response) {
-        const {email, password, phone, name} = request.body
+        const {name, email, phone, password, rpassword} = request.body
         
-        // const encryptedPassword = md5(password)
-        
-        const user = await connection('user')
-        .where('email', email)
-        .select('user_id')
-        .first()
+        if(name == "" || email == "" || phone == "" || password == "" || rpassword == "" || phone == null) {
+            return response.json({ empty: true})
+        } else {
+            const user = await connection('user')
+            .where('email', email)
+            .select('user_id')
+            .first()
 
-        if(!user) {
-            const register = await connection('user').insert({
-            email: email,
-            password: md5(password),
-            name: name,
-            phone: phone,
-            activated: true
-        })
-        return response.json({ register })
-    } else {
-        return response.json({ emailExist: true})
+            if(!user) {
+                if(rpassword == password) {
+                    const register = await connection('user').insert({
+                    email: email,
+                    password: md5(password),
+                    name: name,
+                    phone: phone,
+                    activated: true
+                })
+
+                return response.json({ register })
+            } else {
+                return response.json({ diffPass: true})
+            }
+        } else {
+            return response.json({ emailExist: true})
+        }
     }
 },
 async uploadImage (req, res, next) {
