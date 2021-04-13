@@ -101,7 +101,9 @@ module.exports = {
                     password: md5(password),
                     name: name,
                     phone: phone,
-                    activated: true
+                    activated: true,
+                    image: 'default.png',
+                    role_id: 3
                 })
 
                 return response.json({ register })
