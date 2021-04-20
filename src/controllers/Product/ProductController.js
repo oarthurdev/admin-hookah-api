@@ -12,7 +12,6 @@ module.exports = {
     async register(request, response) {
         const {name, description, price, store_id, category, name_file} = request.body
         
-        console.log(request.body)
         if (name == "" || description == "") {
             return response.json({ isEmpty: true })
         }

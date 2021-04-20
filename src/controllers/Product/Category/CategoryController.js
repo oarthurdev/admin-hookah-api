@@ -10,15 +10,13 @@ module.exports = {
 
         try {
             const category = await connection('category')
-            .select(['category_id', 'name'])
+            .select('name')
 
             category.forEach(element => {
-                categoryReturn.push({
-                    value: element.category_id,
-                    text: element.name
-                })
+                categoryReturn.push(element.name)
             })
-            return res.json({ categoryReturn })
+
+            return res.json(categoryReturn)
         } catch (e) {
             res.status(500).send({code: 500, message: 'Failed to get category.' });
         }

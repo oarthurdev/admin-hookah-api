@@ -91,6 +91,7 @@ module.exports = {
     async register(request, response) {
         const {loungeName, loungeDescription, address, phone, products, token, name_file} = request.body
 
+        console.log(request.body)
         let productsForSale = "";
 
         products.forEach(element => {

@@ -56,22 +56,26 @@ module.exports = {
     async profile (req, res) {
         var {email, password, passwordR, passwordRR} = req.body
 
-        const user = await connection('user')
-        .where('email', email)
-        .select('password')
-        .first()
-
-        if(md5(password) != user.password) {
-            res.json({ diffPass:true })
-        }
-        else if(passwordR != passwordRR) {
-            res.json({ diffPass2:true })
-        } else {
-            await connection('user')
-            .update('password', md5(passwordR) )
+        if(password != '' && passwordR != '' && passwordRR != '') {
+            const user = await connection('user')
             .where('email', email)
+            .select('password')
+            .first()
 
-            res.json( true)
+            if(md5(password) != user.password) {
+                res.json({ diffPass:true })
+            }
+            else if(passwordR != passwordRR) {
+                res.json({ diffPass2:true })
+            } else {
+                await connection('user')
+                .update('password', md5(passwordR) )
+                .where('email', email)
+
+                res.json( true)
+            }
+        } else {
+            res.json(true)
         }
     },
 

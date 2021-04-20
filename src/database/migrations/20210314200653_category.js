@@ -1,7 +1,6 @@
 
 exports.up = function(knex) {
     return knex.schema.createTable('category', function(table) {
-        table.increments('category_id');
         table.string('name')
         table.timestamp('created_at').defaultTo(knex.fn.now())
         table.timestamp('updated_at').defaultTo(knex.fn.now())
