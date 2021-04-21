@@ -6,7 +6,8 @@ exports.seed = function(knex) {
       // Inserts seed entries
       return knex('role').insert([
         {role_id: 1, name: 'Developer'},
-        {role_id: 2, name: 'Administrator'}
+        {role_id: 2, name: 'Administrator'},
+        {role_id: 3, name: 'Usuário'}
       ]);
     });
 };

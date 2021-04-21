@@ -89,14 +89,9 @@ module.exports = {
     },
     
     async register(request, response) {
-        const {loungeName, loungeDescription, address, phone, products, token, name_file} = request.body
+        const {name, description, address, phone, products, token, name_file} = request.body
 
-        console.log(request.body)
         let productsForSale = "";
-
-        products.forEach(element => {
-            productsForSale += element.text + ','
-        });
 
         try {
             const user = await connection('user')
@@ -106,11 +101,11 @@ module.exports = {
 
             const register = await connection('store').insert({
                             user_id: user.user_id,
-                            name: loungeName,
-                            description: loungeDescription,
-                            address: address,
+                            name: name,
+                            description: description,
+                            address: 'Rua Turim 235 Indaial-SC',
                             phone: phone,
-                            product: productsForSale,
+                            product: products,
                             reviews: 0,
                             image: name_file,
             })

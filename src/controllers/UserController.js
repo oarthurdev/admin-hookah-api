@@ -56,7 +56,9 @@ module.exports = {
     async profile (req, res) {
         var {email, password, passwordR, passwordRR} = req.body
 
-        if(password != '' && passwordR != '' && passwordRR != '') {
+        if(password == '' || passwordR == '' || passwordRR == '') {
+            res.json(true)
+        } else {
             const user = await connection('user')
             .where('email', email)
             .select('password')
@@ -74,8 +76,6 @@ module.exports = {
 
                 res.json( true)
             }
-        } else {
-            res.json(true)
         }
     },
 
