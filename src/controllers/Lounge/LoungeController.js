@@ -19,7 +19,7 @@ module.exports = {
 
             const lounge = await connection('store')
                             .where('user_id', user.user_id)
-                            .select(['store_id', 'name'])
+                            .select(['store_id', 'name', 'image', 'description', 'phone', 'address'])
                 
             return res.json({ lounge: lounge })
         } catch (e) {
@@ -111,6 +111,25 @@ module.exports = {
             })
             return response.json({ success: true })
         } catch (e) {
+            return response.json({ error: true })
+        }
+    },
+
+    async delete(request, response) {
+        const store_id = request.body.store_id
+
+        const selectLounge = await connection('store')
+                                .where('store_id', store_id)
+                                .select('name')
+                                .first()
+
+        const delStore = await connection('store')
+                                .where('store_id', store_id)
+                                .del()
+
+        if(delStore) {
+            return response.json(selectLounge)
+        } else {
             return response.json({ error: true })
         }
     }
