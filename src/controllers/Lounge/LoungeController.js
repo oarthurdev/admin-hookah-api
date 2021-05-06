@@ -19,7 +19,7 @@ module.exports = {
 
             const lounge = await connection('store')
                             .where('user_id', user.user_id)
-                            .select(['store_id', 'name', 'image', 'description', 'phone', 'address'])
+                            .select(['store_id', 'name', 'image', 'description', 'phone', 'address', 'product'])
                 
             return res.json({ lounge: lounge })
         } catch (e) {
@@ -52,9 +52,11 @@ module.exports = {
     async uploadImage (req, res, next) {
         const {image, store_id} = req.body
 
+        console.log(req.body)
         var store_name = req.body.store_name
 
         store_name = createSlug(store_name)
+        
         
         var matches = image.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
         response = {};
@@ -112,6 +114,29 @@ module.exports = {
             return response.json({ success: true })
         } catch (e) {
             return response.json({ error: true })
+        }
+    },
+
+    async update(request, response) {
+        const {name, description, address, phone, token, name_file} = request.body
+
+        try {
+            const user = await connection('user')
+            .where('token', token)
+            .select('user_id')
+            .first()
+
+            await connection('store')
+                            .where('user_id', user.user_id)
+                            .update({
+                                name: request.body.name_store,
+                                description: request.body.description_store,
+                                address: request.body.address_store,
+                                phone: request.body.phone_store
+                            })
+            return response.json({success: true})
+        } catch (e) {
+            return response.json({error: true})
         }
     },
 

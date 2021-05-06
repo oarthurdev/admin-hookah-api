@@ -6,7 +6,7 @@ var fs = require('fs')
 
 module.exports = {
     async verifyJWT(req, res, next){
-        var token = req.headers['x-access-token'];
+        var token = req.headers['authorization'];
         if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
         
         jwt.verify(token, process.env.SECRET, function(err, decoded) {
@@ -43,6 +43,7 @@ module.exports = {
                 expiresIn: 3600 // expires in 1 hour
             })
 
+            console.log(token)
             await connection('user')
             .update('token', token)
             .where('user_id', user.user_id)
@@ -56,7 +57,8 @@ module.exports = {
     async profile (req, res) {
         var {email, password, passwordR, passwordRR} = req.body
 
-        if(password == '' || passwordR == '' || passwordRR == '') {
+        if((password == '' || passwordR == '' || passwordRR == '') ||
+           (password != '' || passwordR == '' || passwordRR == '')) {
             res.json(true)
         } else {
             const user = await connection('user')
