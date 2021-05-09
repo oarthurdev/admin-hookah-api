@@ -118,7 +118,9 @@ module.exports = {
     },
 
     async update(request, response) {
-        const {name, description, address, phone, token, name_file} = request.body
+        const {name, description, address, phone, name_file} = request.body
+
+        const token = request.headers.authorization
 
         try {
             const user = await connection('user')

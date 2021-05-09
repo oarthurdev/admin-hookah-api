@@ -7,7 +7,6 @@ var fs = require('fs')
 module.exports = {
     async verifyJWT(req, res, next){
         var token = req.headers['authorization']
-        token = JSON.parse(token)
 
         if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
         
@@ -41,10 +40,15 @@ module.exports = {
 
         else if(email == user.email && pwd == user.password){
             const id = user.user_id
-            
-            var token = jwt.sign({ id }, process.env.SECRET, {
-                expiresIn: '1d' // expires in 1 day
-            })
+            const email = user.email
+
+            var token = jwt.sign({ 
+                user:{
+                    'id': id,
+                    'email': email
+                }}, process.env.SECRET, {
+                    expiresIn: Math.floor(Date.now() / 1000) + (60 * 60) // never expire
+                })
 
             await connection('user')
             .update('token', token)
