@@ -9,11 +9,11 @@ require("dotenv-safe").config()
 
 module.exports = {
     async getAll (req, res, next) {
-        let token = req.body.token
+        let email = req.body.email
 
         try {
             const user = await connection('user')
-            .where('token', token)
+            .where('email', email)
             .select('user_id')
             .first()
 
@@ -127,9 +127,8 @@ module.exports = {
             .first()
 
             await connection('store')
-                            .where('user_id', user.user_id)
+                            .where('store_id', request.body.store_id)
                             .update({
-                                name: request.body.name_store,
                                 description: request.body.description_store,
                                 address: request.body.address_store,
                                 phone: request.body.phone_store

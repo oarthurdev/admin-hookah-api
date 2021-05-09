@@ -6,10 +6,13 @@ var fs = require('fs')
 
 module.exports = {
     async verifyJWT(req, res, next){
-        var token = req.headers['authorization'];
+        var token = req.headers['authorization']
+        token = JSON.parse(token)
+
         if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
         
         jwt.verify(token, process.env.SECRET, function(err, decoded) {
+            console.log(err)
           if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
           
           // se tudo estiver ok, salva no request para uso posterior
@@ -40,10 +43,9 @@ module.exports = {
             const id = user.user_id
             
             var token = jwt.sign({ id }, process.env.SECRET, {
-                expiresIn: 3600 // expires in 1 hour
+                expiresIn: '1d' // expires in 1 day
             })
 
-            console.log(token)
             await connection('user')
             .update('token', token)
             .where('user_id', user.user_id)
