@@ -48,10 +48,10 @@ module.exports = {
     },
 
     async getPhoto (req, res, next) {
-        let email = req.body.email
+        let userJwt = getHeaders(req.headers.authorization)
 
         const user = await connection('user')
-        .where('email', email)
+        .where('email', userJwt.email)
         .select('image')
         .first()
             
@@ -59,11 +59,11 @@ module.exports = {
     },
 
     async getRole (req, res, next) {
-        let email = req.body.email
+        let userJwt = getHeaders(req.headers.authorization)
 
         try {
             const user = await connection('user')
-            .where('email', email)
+            .where('email', userJwt.email)
             .select('role_id')
             .first()
 

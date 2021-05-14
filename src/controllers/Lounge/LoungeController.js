@@ -1,19 +1,12 @@
 const connection = require('../../database/connection')
-const String = require('../../functions/string-prototypes')
-
-var fs = require('fs')
-const md5 = require('md5')
-var uniqid = require('uniqid')
-
-require("dotenv-safe").config()
 
 module.exports = {
     async getAll (req, res, next) {
-        let email = req.body.email
-
         try {
+            let userJwt = getHeaders(req.headers.authorization)
+
             const user = await connection('user')
-            .where('email', email)
+            .where('email', userJwt.email)
             .select('user_id')
             .first()
 
@@ -91,7 +84,9 @@ module.exports = {
     },
     
     async register(request, response) {
-        const {name, description, address, phone, products, token, name_file} = request.body
+        const {name, description, address, phone, products, name_file} = request.body
+
+        const token = request.headers.authorization
 
         let productsForSale = "";
 
