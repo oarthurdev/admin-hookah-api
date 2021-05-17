@@ -1,4 +1,6 @@
 const connection = require('../../database/connection')
+var fs = require('fs')
+var uniqid = require('uniqid')
 
 module.exports = {
     async getAll (req, res, next) {

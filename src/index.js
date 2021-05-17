@@ -8,13 +8,11 @@ const app = express()
 const cookieParser = require('cookie-parser')
 let bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken')
-var fs = require('fs')
 const connection = require('../src/database/connection')
 const String = require('../src/functions/string-prototypes')
 const GetHeader = require('../src/functions/get-headers')
 
 const md5 = require('md5')
-var uniqid = require('uniqid')
 
 require("dotenv-safe").config()
 

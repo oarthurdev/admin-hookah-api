@@ -1,6 +1,7 @@
 const md5 = require('md5')
 const jwt = require('jsonwebtoken');
 const connection = require('../database/connection')
+var fs = require('fs')
 
 module.exports = {
     async verifyJWT(req, res, next){
@@ -37,11 +38,13 @@ module.exports = {
         else if(email == user.email && pwd == user.password){
             const id = user.user_id
             const email = user.email
-
+            const name = user.name
+            
             var token = jwt.sign({ 
                 user:{
                     'id': id,
-                    'email': email
+                    'email': email,
+                    'name': name
                 }}, process.env.SECRET, {
                     expiresIn: Math.floor(Date.now() / 1000) + (60 * 60) // never expire
                 })
@@ -118,7 +121,7 @@ module.exports = {
                     role_id: 3
                 })
 
-                return response.json({ register })
+                return response.json({ success: true })
             } else {
                 return response.json({ diffPass: true})
             }
