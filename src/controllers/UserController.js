@@ -26,9 +26,6 @@ module.exports = {
         if (email == "" || pwd == "") {
             return response.json({ isEmpty: true })
         }
-        
-        if (!req.body.captcha)
-            return res.json({ success: false, msg: 'Please select captcha' });
 
         const VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
 
@@ -59,6 +56,9 @@ module.exports = {
         if(userPass == undefined && user.email == email) {
             return res.json({invalidPass: true })
         } 
+        if (!req.body.captcha) {
+            return res.json({ success: false, msg: 'Please select captcha' })
+        }
         else if(email == user.email && pwd == user.password){
             const id = user.user_id
             const email = user.email
