@@ -1,7 +1,8 @@
 const md5 = require('md5')
 const jwt = require('jsonwebtoken');
 const connection = require('../database/connection')
-var fs = require('fs')
+const fs = require('fs')
+const fetch = require("node-fetch");
 
 module.exports = {
     async verifyJWT(req, res, next){
@@ -24,7 +25,28 @@ module.exports = {
 
         if (email == "" || pwd == "") {
             return response.json({ isEmpty: true })
-        } 
+        }
+        
+        if (!req.body.captcha)
+            return res.json({ success: false, msg: 'Please select captcha' });
+
+        const VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
+
+        const body = fetch(VERIFY_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${req.body['captcha']}`,
+        })
+        .then(response => response.json())
+        .then(data => {
+            res.locals.recaptcha = data;
+            return next();
+        });
+        
+        const userPass = await connection('user')
+        .where('password', pwd)
+        .select('password')
+        .first()
 
         const user = await connection('user')
         .where('email', email)
@@ -32,9 +54,11 @@ module.exports = {
         .first()
 
         if(user == undefined) {
-            return res.json({ noExist: true })
+            return res.json({noExist: true })
         } 
-
+        if(userPass == undefined && user.email == email) {
+            return res.json({invalidPass: true })
+        } 
         else if(email == user.email && pwd == user.password){
             const id = user.user_id
             const email = user.email
