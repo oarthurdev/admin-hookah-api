@@ -56,7 +56,7 @@ module.exports = {
         if(userPass == undefined && user.email == email) {
             return res.json({invalidPass: true })
         } 
-        if (!req.body.captcha) {
+        if (!req.body.captcha && req.body.captcha != null) {
             return res.json({ success: false, msg: 'Please select captcha' })
         }
         else if(email == user.email && pwd == user.password){
@@ -73,6 +73,8 @@ module.exports = {
                     expiresIn: Math.floor(Date.now() / 1000) + (60 * 60) // never expire
                 })
 
+            res.setHeader('Authorization', token)
+
             await connection('user')
             .update('token', token)
             .where('user_id', user.user_id)
@@ -83,11 +85,19 @@ module.exports = {
         }
     },
     
+    async info (req, res) {
+        try {
+            console.log(req.body)
+            return res.json({error: false, message: 'OK'})
+        } catch (err) {
+            return res.json({error: true, message: err.message})
+        }
+    },
+
     async profile (req, res) {
         var {email, password, passwordR, passwordRR} = req.body
 
-        if((password == '' || passwordR == '' || passwordRR == '') ||
-           (password != '' || passwordR == '' || passwordRR == '')) {
+        if((password == '' || passwordR == '' || passwordRR == '')) {
             res.json(true)
         } else {
             const user = await connection('user')

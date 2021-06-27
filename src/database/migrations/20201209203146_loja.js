@@ -5,7 +5,13 @@ exports.up = function(knex) {
         table.integer('user_id').notNullable();
         table.string('name').notNullable();
         table.string('description').notNullable();
-        table.string('address').notNullable();
+        table.string('zipcode').notNullable();
+        table.string('street').notNullable();
+        table.string('number');
+        table.string('complement');
+        table.string('neighborhood').notNullable();
+        table.string('city').notNullable();
+        table.string('state').notNullable();
         table.string('phone').notNullable();
         table.string('product');
         table.string('image');

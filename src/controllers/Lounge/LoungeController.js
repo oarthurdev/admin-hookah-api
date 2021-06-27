@@ -4,22 +4,19 @@ var uniqid = require('uniqid')
 
 module.exports = {
     async getAll (req, res, next) {
-        try {
+        // try {
             let userJwt = getHeaders(req.headers.authorization)
 
-            const user = await connection('user')
-            .where('email', userJwt.email)
-            .select('user_id')
-            .first()
+            // console.log(userJwt)
 
             const lounge = await connection('store')
-                            .where('user_id', user.user_id)
-                            .select(['store_id', 'name', 'image', 'description', 'phone', 'address', 'product'])
+                            .where('user_id', userJwt.id)
+                            .select(['store_id', 'name', 'image', 'description', 'phone', 'zipcode', 'street', 'number', 'complement', 'neighborhood', 'city', 'state', 'product'])
                 
             return res.json({ lounge: lounge })
-        } catch (e) {
-            res.status(500).send({ code: 404, message: 'Failed to get your lounges.' });
-        }
+        // } catch (e) {
+        //     res.status(500).send({ code: 404, message: 'Failed to get your lounges.' });
+        // }
     },
 
     async getImage (req, res, next) {
@@ -86,51 +83,54 @@ module.exports = {
     },
     
     async register(request, response) {
-        const {name, description, address, phone, products, name_file} = request.body
+        const {name, description, phone, cep, logradouro, bairro, cidade, estado, numero, complemento, products, name_file} = request.body
 
-        const token = request.headers.authorization
+        const userJwt = getHeaders(request.headers.authorization)
 
         let productsForSale = "";
 
-        try {
-            const user = await connection('user')
-                            .where('token', token)
-                            .select('user_id')
-                            .first()
-
+        // try {
             const register = await connection('store').insert({
-                            user_id: user.user_id,
+                            user_id: userJwt.id,
                             name: name,
                             description: description,
-                            address: 'Rua Turim 235 Indaial-SC',
                             phone: phone,
+                            zipcode: cep,
+                            street: logradouro,
+                            neighborhood: bairro,
+                            city: cidade,
+                            state: estado,
+                            number: numero,
+                            complement: complemento,
                             product: products,
                             reviews: 0,
                             image: name_file,
             })
             return response.json({ success: true })
-        } catch (e) {
-            return response.json({ error: true })
-        }
+        // } catch (e) {
+        //     return response.json({ error: true })
+        // }
     },
 
     async update(request, response) {
-        const {name, description, address, phone, name_file} = request.body
+        const {name_file, store_id, store_update} = request.body
 
-        const token = request.headers.authorization
+        // let userJwt = getHeaders(request.headers.authorization)
 
         try {
-            const user = await connection('user')
-            .where('token', token)
-            .select('user_id')
-            .first()
-
             await connection('store')
-                            .where('store_id', request.body.store_id)
+                            .where('store_id', store_id)
                             .update({
-                                description: request.body.description_store,
-                                address: request.body.address_store,
-                                phone: request.body.phone_store
+                                description: store_update.description,
+                                phone: store_update.phone,
+                                zipcode: store_update.address.cep,
+                                street: store_update.address.street,
+                                number: store_update.address.numero,
+                                complement: store_update.address.complement,
+                                neighborhood: store_update.address.bairro,
+                                city: store_update.address.cidade,
+                                state: store_update.address.estado,
+                                phone: store_update.phone
                             })
             return response.json({success: true})
         } catch (e) {
