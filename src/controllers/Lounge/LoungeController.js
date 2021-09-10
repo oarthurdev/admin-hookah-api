@@ -4,32 +4,38 @@ var uniqid = require('uniqid')
 
 module.exports = {
     async getAll (req, res, next) {
-        // try {
+        try {
             let userJwt = getHeaders(req.headers.authorization)
-
-            // console.log(userJwt)
-
+            
             const lounge = await connection('store')
-                            .where('user_id', userJwt.id)
-                            .select(['store_id', 'name', 'image', 'description', 'phone', 'zipcode', 'street', 'number', 'complement', 'neighborhood', 'city', 'state', 'product'])
+                                 .where('user_id', userJwt.id)
+                                 .select(['store_id', 
+                                          'name', 
+                                          'image', 
+                                          'description', 
+                                          'phone', 
+                                          'zipcode', 
+                                          'street', 
+                                          'number', 
+                                          'complement', 
+                                          'neighborhood', 
+                                          'city', 
+                                          'state', 
+                                          'product'])
                 
             return res.json({ lounge: lounge })
-        // } catch (e) {
-        //     res.status(500).send({ code: 404, message: 'Failed to get your lounges.' });
-        // }
+        } catch (e) {
+            res.status(500).send({ code: 404, message: 'Failed to get your lounges.' });
+        }
     },
 
     async getImage (req, res, next) {
-        let token = req.body.token
-
+        let userJwt = getHeaders(req.headers.authorization)
+        const store_id = req.body.store_id
         try {
-            const user = await connection('user')
-            .where('token', token)
-            .select('user_id')
-            .first()
 
             const lounge = await connection('store')
-                            .where('user_id', user.user_id)
+                            .where('store_id', store_id)
                             .select(['image', 'name'])
                             .whereNotNull("image")
                             .groupBy("store_id")

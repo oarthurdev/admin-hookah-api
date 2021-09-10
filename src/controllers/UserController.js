@@ -73,7 +73,7 @@ module.exports = {
                     expiresIn: Math.floor(Date.now() / 1000) + (60 * 60) // never expire
                 })
 
-            res.setHeader('Authorization', token)
+            // res.setHeader('Authorization', token)
 
             await connection('user')
             .update('token', token)
